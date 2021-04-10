@@ -107,9 +107,9 @@ namespace SN_DEV_JIW_TEST.Controllers
                 //telemetryClient.TrackException(new ExceptionTelemetry() { Message = e.Message });
                 //telemetryClient.TrackTrace($"Error :: {e.StackTrace} :: {e.InnerException}");
 
-                return Content(HttpStatusCode.BadRequest, "Error Message:" + e.Message + "\n" + e.StackTrace);
+                //return Content(HttpStatusCode.BadRequest, "Error Message:" + e.Message + "\n" + e.StackTrace);
 
-                //return Ok("Error Message:" + e.Message + "\n" + e.StackTrace);
+                return Ok("Error Message:" + e.Message + "\n" + e.StackTrace);
             }
         }
 
