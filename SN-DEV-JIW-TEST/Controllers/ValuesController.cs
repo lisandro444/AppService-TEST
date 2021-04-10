@@ -66,7 +66,7 @@ namespace SN_DEV_JIW_TEST.Controllers
                 string clientSecret = "SxyiDr4EldeK1d54qouPvjrMNbxXk588DVYVUfOfvv0=";
                 string provisioningUrl = "https://lisandrorossi444.sharepoint.com/";
 
-                using (var clientContext = new AuthenticationManager().GetContext(provisioningUrl))
+                using (var clientContext = new AuthenticationManager().GetACSAppOnlyContext(provisioningUrl, clientId, clientSecret))
                 {
                     var oWebsite = clientContext.Web;
                     ListCollection collList = oWebsite.Lists;
@@ -93,11 +93,6 @@ namespace SN_DEV_JIW_TEST.Controllers
 
                     var count = collList.Count();
                 };
-
-                //ClientContext clientContext = AuthenticationHelper.GetAppOnlyContext(provisioningUrl, IntegrationSite.UserAgent);
-
-
-
 
                 return Ok("Success");
             }
