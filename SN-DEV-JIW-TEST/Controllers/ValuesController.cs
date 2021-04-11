@@ -153,13 +153,25 @@ namespace SN_DEV_JIW_TEST.Controllers
 
                 ClientContext clientContext = TokenHelper.GetClientContextWithAccessToken(siteUri.ToString(), accessToken, userAgent);
 
-                //var oWebsite = clientContext.Web;
-                //ListCollection collList = oWebsite.Lists;
-                //clientContext.Load(collList);
-                //clientContext.ExecuteQuery();
+                var oWebsite = clientContext.Web;
+                ListCollection collList = oWebsite.Lists;
+                List spList = clientContext.Web.Lists.GetByTitle("TestList");
 
-                //var count = collList.Count();
-                ///
+                clientContext.Load(collList);
+                clientContext.Load(spList);
+
+                ListItemCollection items = spList.GetItems(CamlQuery.CreateAllItemsQuery());
+                clientContext.Load(items); // loading all the fields
+                clientContext.ExecuteQuery();
+
+                foreach (var item in items)
+                {
+
+                    item["Title"] = "modificado por la azure app service de prueba";
+
+                    item.Update();
+                }
+                clientContext.ExecuteQuery(); // important, commit changes to the server
 
                 return Ok("Success");
             }
