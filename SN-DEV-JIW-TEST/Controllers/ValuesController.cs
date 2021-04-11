@@ -126,7 +126,7 @@ namespace SN_DEV_JIW_TEST.Controllers
                 //Lisandro Tenant
                 string clientId = "c8df37d8-749d-46d0-8eb6-f85b9c786657";
                 string clientSecret = "SxyiDr4EldeK1d54qouPvjrMNbxXk588DVYVUfOfvv0=";
-                string provisioningUrl = "https://lisandrorossi444.sharepoint.com/";
+                string provisioningUrl = "https://jciadqa.sharepoint.com/sites/SFProjInteg"; //"https://lisandrorossi444.sharepoint.com/";
 
                 telemetryClient.TrackTrace("Calling Access Token Method");
                 //var kv = new KeyVaultHelper(keyVaultEndpoint);
@@ -155,25 +155,25 @@ namespace SN_DEV_JIW_TEST.Controllers
 
                 ClientContext clientContext = TokenHelper.GetClientContextWithAccessToken(siteUri.ToString(), accessToken, userAgent);
 
-                var oWebsite = clientContext.Web;
-                ListCollection collList = oWebsite.Lists;
-                List spList = clientContext.Web.Lists.GetByTitle("TestList");
+                //var oWebsite = clientContext.Web;
+                //ListCollection collList = oWebsite.Lists;
+                //List spList = clientContext.Web.Lists.GetByTitle("TestList");
 
-                clientContext.Load(collList);
-                clientContext.Load(spList);
+                //clientContext.Load(collList);
+                //clientContext.Load(spList);
 
-                ListItemCollection items = spList.GetItems(CamlQuery.CreateAllItemsQuery());
-                clientContext.Load(items); // loading all the fields
-                clientContext.ExecuteQuery();
+                //ListItemCollection items = spList.GetItems(CamlQuery.CreateAllItemsQuery());
+                //clientContext.Load(items); // loading all the fields
+                //clientContext.ExecuteQuery();
 
-                foreach (var item in items)
-                {
+                //foreach (var item in items)
+                //{
 
-                    item["Title"] = "modificado por la azure app service de prueba";
+                //    item["Title"] = "modificado por la azure app service de prueba";
 
-                    item.Update();
-                }
-                clientContext.ExecuteQuery(); // important, commit changes to the server
+                //    item.Update();
+                //}
+                //clientContext.ExecuteQuery(); // important, commit changes to the server
 
                 return Ok("Success");
             }
