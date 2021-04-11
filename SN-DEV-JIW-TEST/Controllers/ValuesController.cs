@@ -147,8 +147,8 @@ namespace SN_DEV_JIW_TEST.Controllers
                 //Get the access token for the URL.  
                 //   Requires this app to be registered with the tenant
 
-                TokenHelper.ClientId = "c8df37d8-749d-46d0-8eb6-f85b9c786657";
-                TokenHelper.ClientSecret = "SxyiDr4EldeK1d54qouPvjrMNbxXk588DVYVUfOfvv0=";
+                TokenHelper.ClientId = "8d8c127f-6a3c-48a5-9538-0b329f5eb5fe";
+                TokenHelper.ClientSecret = "ERNLnW6K11vlwf21wZ4i8KbiiKCZmUNOrJgmWHlY/wU=";
                 string accessToken = TokenHelper.GetAppOnlyAccessToken(TokenHelper.SharePointPrincipal, siteUri.Authority, realm).AccessToken;
 
                 string userAgent = "NONISV|JohnsonControls|SelNav.Integration.Web/1.0";
