@@ -144,6 +144,9 @@ namespace SN_DEV_JIW_TEST.Controllers
                 // tc.TrackEvent($"Nikhil : realm: {realm}");
                 //Get the access token for the URL.  
                 //   Requires this app to be registered with the tenant
+
+                TokenHelper.ClientId = "c8df37d8-749d-46d0-8eb6-f85b9c786657";
+                TokenHelper.ClientSecret = "SxyiDr4EldeK1d54qouPvjrMNbxXk588DVYVUfOfvv0=";
                 string accessToken = TokenHelper.GetAppOnlyAccessToken(TokenHelper.SharePointPrincipal, siteUri.Authority, realm).AccessToken;
 
                 string userAgent = "NONISV|JohnsonControls|SelNav.Integration.Web/1.0";
