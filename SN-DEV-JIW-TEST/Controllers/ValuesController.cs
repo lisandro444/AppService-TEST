@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Web.Http;
 using Microsoft.ApplicationInsights;
 using System.Globalization;
+using System.Net;
 
 namespace SN_DEV_JIW_TEST.Controllers
 {
@@ -141,6 +142,7 @@ namespace SN_DEV_JIW_TEST.Controllers
 
                 telemetryClient.TrackTrace($"DATA2:Resource: {resource} :clientId: {clientId} :HostedAppHostName: {HostedAppHostName} :HostedAppHostName: {realm}");
 
+
                 // tc.TrackEvent($"Nikhil : realm: {realm}");
                 //Get the access token for the URL.  
                 //   Requires this app to be registered with the tenant
@@ -185,6 +187,57 @@ namespace SN_DEV_JIW_TEST.Controllers
 
                 return Ok("Error Message:" + e.Message + "\n" + e.StackTrace);
             }
+        }
+
+        [HttpPost]
+        [Route("api/TestSharePointIntegration/GetRealm")]
+        public static string GetRealmFromTargetUrl(string provisioningUrl)
+        {
+            Uri siteUri = new Uri(provisioningUrl);
+            WebRequest request = WebRequest.Create(siteUri + "/_vti_bin/client.svc");
+            request.Headers.Add("Authorization: Bearer ");
+
+            try
+            {
+                using (request.GetResponse())
+                {
+                }
+            }
+            catch (WebException e)
+            {
+                if (e.Response == null)
+                {
+                    return null;
+                }
+
+                string bearerResponseHeader = e.Response.Headers["WWW-Authenticate"];
+                if (string.IsNullOrEmpty(bearerResponseHeader))
+                {
+                    return null;
+                }
+
+                const string bearer = "Bearer realm=\"";
+                int bearerIndex = bearerResponseHeader.IndexOf(bearer, StringComparison.Ordinal);
+                if (bearerIndex < 0)
+                {
+                    return null;
+                }
+
+                int realmIndex = bearerIndex + bearer.Length;
+
+                if (bearerResponseHeader.Length >= realmIndex + 36)
+                {
+                    string targetRealm = bearerResponseHeader.Substring(realmIndex, 36);
+
+                    Guid realmGuid;
+
+                    if (Guid.TryParse(targetRealm, out realmGuid))
+                    {
+                        return targetRealm;
+                    }
+                }
+            }
+            return null;
         }
 
         // GET api/values/5

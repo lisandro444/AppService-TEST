@@ -638,6 +638,7 @@ namespace SN_DEV_JIW_TEST
         /// <returns>String representation of the realm GUID</returns>
         public static string GetRealmFromTargetUrl(Uri targetApplicationUri)
         {
+            var telemetryClient = new TelemetryClient();
             WebRequest request = WebRequest.Create(targetApplicationUri + "/_vti_bin/client.svc");
             request.Headers.Add("Authorization: Bearer ");
 
@@ -662,21 +663,23 @@ namespace SN_DEV_JIW_TEST
 
                 const string bearer = "Bearer realm=\"";
                 int bearerIndex = bearerResponseHeader.IndexOf(bearer, StringComparison.Ordinal);
+                telemetryClient.TrackTrace($"INFO IMPORTANT REALM: {bearerResponseHeader} :clientId: {bearerIndex} :HostedAppHostName: {bearer} :CATCH ERROR: {e.Message}");
                 if (bearerIndex < 0)
                 {
                     return null;
                 }
 
                 int realmIndex = bearerIndex + bearer.Length;
-
+                telemetryClient.TrackTrace($"NEXT INFO IMPORTANT FROM REALM : {realmIndex} :clientId: {bearerIndex} :HostedAppHostName: {bearer} :CATCH ERROR: {e.Message}");
                 if (bearerResponseHeader.Length >= realmIndex + 36)
                 {
                     string targetRealm = bearerResponseHeader.Substring(realmIndex, 36);
 
                     Guid realmGuid;
-
+                    telemetryClient.TrackTrace($"NEXT 2 INFO IMPORTANT FROM REALM : {targetRealm} :clientId: {bearerIndex} :HostedAppHostName: {bearer} :CATCH ERROR: {e.Message}");
                     if (Guid.TryParse(targetRealm, out realmGuid))
                     {
+                        telemetryClient.TrackTrace($"NEXT 3 INFO IMPORTANT FROM REALM : {realmGuid} :clientId: {bearerIndex} :HostedAppHostName: {bearer} :CATCH ERROR: {e.Message}");
                         return targetRealm;
                     }
                 }
