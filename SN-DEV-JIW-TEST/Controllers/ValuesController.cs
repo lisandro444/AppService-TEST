@@ -189,6 +189,69 @@ namespace SN_DEV_JIW_TEST.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("api/TestSharePointIntegration/AddUserToSPGroup")]
+        public IHttpActionResult AddUserToSPGroup()
+        {
+            try
+            {
+          
+                var telemetryClient = new TelemetryClient();
+                //Lisandro Tenant
+                string clientId = "c8df37d8-749d-46d0-8eb6-f85b9c786657";
+                string clientSecret = "SxyiDr4EldeK1d54qouPvjrMNbxXk588DVYVUfOfvv0=";
+                string provisioningUrl = "https://lisandrorossi444.sharepoint.com/";
+
+                telemetryClient.TrackTrace("Calling Access Token Method");
+                Uri siteUri = new Uri(provisioningUrl);
+
+                //Get the realm for the URL
+                string realm = TokenHelper.GetRealmFromTargetUrl(siteUri);
+
+                // tc.TrackEvent($"Nikhil : realm: {realm}");
+                //Get the access token for the URL.  
+                //   Requires this app to be registered with the tenant
+                string accessToken = TokenHelper.GetAppOnlyAccessToken(TokenHelper.SharePointPrincipal, siteUri.Authority, realm).AccessToken;
+
+                string userAgent = "NONISV|JohnsonControls|SelNav.Integration.Web/1.0";
+
+                //Get client context with accesstoken
+                var clientContext = TokenHelper.GetClientContextWithAccessToken(siteUri.ToString(), accessToken, userAgent);
+
+                //var oWebsite = clientContext.Web;
+                //ListCollection collList = oWebsite.Lists;
+                //List spList = clientContext.Web.Lists.GetByTitle("TestList");
+
+                //clientContext.Load(collList);
+                //clientContext.Load(spList);
+
+                //ListItemCollection items = spList.GetItems(CamlQuery.CreateAllItemsQuery());
+                //clientContext.Load(items); // loading all the fields
+                //clientContext.ExecuteQuery();
+
+                //foreach (var item in items)
+                //{
+
+                //    item["Title"] = "modificado por la azure app service de prueba";
+
+                //    item.Update();
+                //}
+                //clientContext.ExecuteQuery(); // important, commit changes to the server
+
+                return Ok("Success");
+            }
+            catch (Exception e)
+            {
+                string message = $"EXEPTION FROM KEYVAULT";
+                //telemetryClient.TrackException(new ExceptionTelemetry() { Message = e.Message });
+                //telemetryClient.TrackTrace($"Error :: {e.StackTrace} :: {e.InnerException}");
+
+                //return Content(HttpStatusCode.BadRequest, "Error Message:" + e.Message + "\n" + e.StackTrace);
+
+                return Ok("Error Message:" + e.Message + "\n" + e.StackTrace);
+            }
+        }
+
         [HttpPost]
         [Route("api/TestSharePointIntegration/GetRealm")]
         public static string GetRealmFromTargetUrl(string provisioningUrl)
