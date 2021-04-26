@@ -9,6 +9,7 @@ using System.Web.Http;
 using Microsoft.ApplicationInsights;
 using System.Globalization;
 using System.Net;
+using SN_DEV_JIW_TEST.Entities;
 
 namespace SN_DEV_JIW_TEST.Controllers
 {
@@ -189,9 +190,9 @@ namespace SN_DEV_JIW_TEST.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("api/TestSharePointIntegration/AddUserToSPGroup")]
-        public IHttpActionResult AddUserToSPGroup()
+        public IHttpActionResult AddUserToSPGroup([FromBody] AddUserModelRequest parameters)
         {
             try
             {
@@ -205,17 +206,14 @@ namespace SN_DEV_JIW_TEST.Controllers
                 telemetryClient.TrackTrace("Calling Access Token Method");
                 Uri siteUri = new Uri(provisioningUrl);
                 //Get the realm for the URL
-                string realm = "629fd4e8-9d26-4da5-85ff-cc01ca1948c4"; //string realm = TokenHelper.GetRealmFromTargetUrl(siteUri);
+                // this should works after update rpoject to framework 4.7.2 or change the run time in the webconfig
+                string realm = "629fd4e8-9d26-4da5-85ff-cc01ca1948c4"; //string realm = TokenHelper.GetRealmFromTargetUrl(siteUri); 
                 string HostedAppHostName = "JIW"; // WebConfigurationManager.AppSettings.Get("HostedAppHostName");
                 string resource = GetFormattedPrincipal(TokenHelper.SharePointPrincipal, siteUri.Authority, realm);
                 string clientIdFormated = GetFormattedPrincipal(clientId, HostedAppHostName, realm);
 
                 telemetryClient.TrackTrace($"DATA2:Resource: {resource} :clientId: {clientId} :HostedAppHostName: {HostedAppHostName} :HostedAppHostName: {realm}");
 
-
-                // tc.TrackEvent($"Nikhil : realm: {realm}");
-                //Get the access token for the URL.  
-                //   Requires this app to be registered with the tenant
 
                 TokenHelper.ClientId = clientId;
                 TokenHelper.ClientSecret = clientSecret;
@@ -225,7 +223,21 @@ namespace SN_DEV_JIW_TEST.Controllers
 
                 ClientContext clientContext = TokenHelper.GetClientContextWithAccessToken(siteUri.ToString(), accessToken, userAgent);
 
-                //var oWebsite = clientContext.Web;
+                var oWebsite = clientContext.Web;
+
+
+                // Get group object using group name
+                Group oGroup = oWebsite.SiteGroups.GetByName(parameters.groupName);
+
+                // Get user using Logon name
+                User oUser = oWebsite.EnsureUser(parameters.userName);
+
+                // Add user to the group
+                oGroup.Users.AddUser(oUser);
+
+                clientContext.ExecuteQuery();
+
+
                 //ListCollection collList = oWebsite.Lists;
                 //List spList = clientContext.Web.Lists.GetByTitle("TestList");
 
