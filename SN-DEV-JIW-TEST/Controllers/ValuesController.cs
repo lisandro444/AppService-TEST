@@ -204,19 +204,26 @@ namespace SN_DEV_JIW_TEST.Controllers
 
                 telemetryClient.TrackTrace("Calling Access Token Method");
                 Uri siteUri = new Uri(provisioningUrl);
-
                 //Get the realm for the URL
-                string realm = TokenHelper.GetRealmFromTargetUrl(siteUri);
+                string realm = "629fd4e8-9d26-4da5-85ff-cc01ca1948c4"; //string realm = TokenHelper.GetRealmFromTargetUrl(siteUri);
+                string HostedAppHostName = "JIW"; // WebConfigurationManager.AppSettings.Get("HostedAppHostName");
+                string resource = GetFormattedPrincipal(TokenHelper.SharePointPrincipal, siteUri.Authority, realm);
+                string clientIdFormated = GetFormattedPrincipal(clientId, HostedAppHostName, realm);
+
+                telemetryClient.TrackTrace($"DATA2:Resource: {resource} :clientId: {clientId} :HostedAppHostName: {HostedAppHostName} :HostedAppHostName: {realm}");
+
 
                 // tc.TrackEvent($"Nikhil : realm: {realm}");
                 //Get the access token for the URL.  
                 //   Requires this app to be registered with the tenant
+
+                TokenHelper.ClientId = clientId;
+                TokenHelper.ClientSecret = clientSecret;
                 string accessToken = TokenHelper.GetAppOnlyAccessToken(TokenHelper.SharePointPrincipal, siteUri.Authority, realm).AccessToken;
 
                 string userAgent = "NONISV|JohnsonControls|SelNav.Integration.Web/1.0";
 
-                //Get client context with accesstoken
-                var clientContext = TokenHelper.GetClientContextWithAccessToken(siteUri.ToString(), accessToken, userAgent);
+                ClientContext clientContext = TokenHelper.GetClientContextWithAccessToken(siteUri.ToString(), accessToken, userAgent);
 
                 //var oWebsite = clientContext.Web;
                 //ListCollection collList = oWebsite.Lists;
